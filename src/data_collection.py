@@ -64,3 +64,16 @@ def get_all_recent_tracks(user, limit=200,max_pages=None, delay=0.25):
         return all_tracks
 
 
+def get_track_info(artist, track):
+    parameters={
+        "method":"track.getInfo",
+        "artist": artist,
+        "track":track,
+        "api_key": API_KEY,
+        "format":"json"
+    }
+    response = requests.get(BASE_URL, params=parameters)
+
+    print("Status code:", response.status_code)
+
+    return response.json()
