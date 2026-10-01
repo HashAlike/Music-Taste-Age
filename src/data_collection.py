@@ -36,7 +36,6 @@ def get_all_recent_tracks(user, limit=200,max_pages=None, delay=0.25):
     first = get_recent_tracks(user, page=1, limit=limit)
 
     total_pages = get_total_pages(first)
-    #print(f"totalPages = {total_pages}")
 
     all_tracks = list(first["recenttracks"]["track"])
 
@@ -62,6 +61,7 @@ def get_all_recent_tracks(user, limit=200,max_pages=None, delay=0.25):
 
 
 
+
 def get_track_info(artist, track):
     parameters={
         "method":"track.getInfo",
@@ -78,8 +78,8 @@ def get_track_info(artist, track):
     else:
         return response.json()
 
-
 cache={}
+
 
 
 def enrich_tracks(user,limit=200, max_pages=None):
@@ -96,6 +96,7 @@ def enrich_tracks(user,limit=200, max_pages=None):
     # Get all track info
     with_info=[]
     for i in uq.itertuples():
+        # cache status check
         if (i.artist,i.name) in cache:
             if cache[i.artist,i.name]== None:
                 continue
@@ -112,6 +113,7 @@ def enrich_tracks(user,limit=200, max_pages=None):
                 clean= clean_track_info(a)
                 with_info.append(clean)
 
+
     # Make them all a dataframe
     df_info= pd.DataFrame(with_info)
 
@@ -119,5 +121,5 @@ def enrich_tracks(user,limit=200, max_pages=None):
     data= pd.merge(df, df_info, how='left', on=["artist","name"], sort=False,\
                     suffixes=('_', '_info'))
 
-    return data
 
+    return data

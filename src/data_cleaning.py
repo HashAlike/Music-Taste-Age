@@ -17,7 +17,6 @@ def clean_tracks(data):
 
     return records
 
-
 def clean_track_info(info_data): 
     tracks= info_data["track"]
     record={}
