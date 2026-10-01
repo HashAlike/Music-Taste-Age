@@ -17,21 +17,38 @@ def clean_tracks(data):
 
     return records
 
+
 def clean_track_info(info_data): 
+    tracks= info_data["track"]
     record={}
-    record["track_mbid"]= info_data["track"]["mbid"]
-    record["duration"]= info_data["track"]["duration"]
-    record["listeners"]=info_data["track"]["listeners"]
-    record["playcount"]=info_data["track"]["playcount"]
+    record["name"]= tracks.get("name")
+    record["track_mbid"]= tracks.get("mbid")
+    record["duration"]= tracks.get("duration")
+    record["listeners"]=tracks.get("listeners")
+    record["playcount"]=tracks.get("playcount")
 
-    record["artist_mbid"]= info_data["track"]["artist"]["mbid"]
-    record["artist"]= info_data["track"]["artist"]["name"]
-    record["album"]= info_data["track"]["album"]["title"]
+    if tracks.get("artist")==None:
+        record["artist_mbid"]= None
+        record["artist"]= None
+    else:
+        record["artist_mbid"]= tracks["artist"].get("mbid")
+        record["artist"]= tracks["artist"].get("name")
 
-    tag=[]
-    for i in info_data["track"]["toptags"]["tag"]:
-        tag.append(i["name"])
+    if tracks.get("album")==None:
+        record["album"]= None
+    else:
+        record["album"]= tracks["album"].get("title")
 
-    record["tags"]=tag
+    if tracks.get("toptags")==None:
+        record["tags"]=[]
+    else:
+        tag=[]
+        if tracks["toptags"].get("tag")==None:
+            record["tags"]=[]
+        else:
+            for i in tracks["toptags"]["tag"]:
+                tag.append(i["name"])
+
+            record["tags"]=tag
 
     return record
