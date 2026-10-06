@@ -12,6 +12,8 @@ dependencies = [
     "python-dotenv>=1.2.3",
     "requests>=2.34.2",
     "seaborn>=0.13.2",
+    "torch>=2.14.1",
+    "transformers>=5.18.0",
 ]
 
 [project.scripts]
