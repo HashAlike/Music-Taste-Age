@@ -5,12 +5,17 @@ import pandas as pd
 from dotenv import load_dotenv
 from src.data_cleaning import clean_track_info
 from src.data_cleaning import clean_tracks
+from googleapiclient.discovery import build
 
 
 load_dotenv()
 
+YTB_KEY= os.getenv("YOUTUBE_API_KEY")
+YTB_URL= "https://www.googleapis.com/youtube/v3/search"
+
 API_KEY = os.getenv("LASTFM_API_KEY")
 BASE_URL = "https://ws.audioscrobbler.com/2.0/"
+
 
 def get_recent_tracks(username, limit=200,page=1):
     params = {
@@ -123,3 +128,38 @@ def enrich_tracks(user,limit=200, max_pages=None):
 
 
     return data
+
+
+youtube = build("youtube", "v3", developerKey=YTB_KEY)
+
+def search_videos(term,max_results):
+    request = youtube.search().list(
+        part = "snippet",
+        q = term,
+        type = "video",
+        maxResults = max_results
+    )
+    response= request.execute()
+
+    ytb_list= []
+    for i in response["items"]:
+        data = {
+            "video_id" : i["id"]["videoId"],
+            "video_title" : i["snippet"]["title"],
+            "description" : i["snippet"]["description"],
+            "channel" : i["snippet"]["channelTitle"],
+            "channel_id" : i["snippet"]["channelId"],
+            "published" : i["snippet"]["publishTime"]
+        }
+
+        ytb_list.append(data)
+
+    ytb_df= pd.DataFrame(ytb_list)
+
+    return ytb_df
+
+
+
+
+
+# def extract_video_metadata():
